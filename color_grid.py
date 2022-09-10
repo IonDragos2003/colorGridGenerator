@@ -1,1 +1,2 @@
-import cv2
+import sys
+print(sys.version)
