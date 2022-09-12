@@ -166,11 +166,11 @@ class Player(QMainWindow):
                 # this will fix it
                 self.Stop()
 
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     app = QApplication(sys.argv)
     player = Player()
     player.show()
     player.resize(640, 480)
     if sys.argv[1:]:
         player.OpenFile(sys.argv[1])
-    sys.exit(app.exec_())
+    sys.exit(app.exec_()) """
