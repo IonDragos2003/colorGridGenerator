@@ -35,8 +35,10 @@ class Custom_VLC_Player(Player):
 
         # We will connect a snapshot taking function to the button later.
         # Let's leave this command commented out for now
-        '''self.connect(self.snapbutton, QtCore.SIGNAL("clicked()"),
-                     self.take_snapshot)'''
+        #self.connect(self.snapbutton, QtCore.SIGNAL("clicked()"),self.take_snapshot)
+        #self.connect(origin, SIGNAL('completed'), self._show_results)
+        self.snapbutton.clicked.connect(self.take_snapshot)
+
 
         # We place a label for specifing the frame count to use
         self.l1 = QtWidgets.QLabel("Number of frames:")
@@ -56,7 +58,7 @@ class Custom_VLC_Player(Player):
         self.snapbox.addWidget(self.sp)
         # Connect a value change function to the spinbox.
         # Let's leave this command commented out for now
-        '''self.sp.valueChanged.connect(self.valuechange)'''
+        self.sp.valueChanged.connect(self.valuechange)
 
         # We add an empty space that streches to the right side
         # that way the next added element will be aligned to the right
@@ -97,8 +99,58 @@ class Custom_VLC_Player(Player):
         self.vboxlayout.addWidget(self.imageareaWidget)
         self.imageareaWidget.setVisible(0)
 
+    def valuechange(self):
+        # We access our global variables within the function
+        global framesTaken
+        global framesSpecified
 
+        # We set the framesSpecified value to
+        # whatever is specified on the spinbox
+        framesSpecified = self.sp.value()
 
+        # We modify our label to give us info, how many
+        # frames have been captured so far
+        self.l2.setText(
+            "Frames taken: "+str(framesTaken)+" from "+str(framesSpecified))
+
+        # Once the snapshot taking process has begun,
+        # we need to disable the spinbox
+        self.sp.setEnabled(0) if (framesTaken > 0) else self.sp.setEnabled(1)
+
+        # We enable our snapshot trigger button, if frames have been specified
+        # and the process is ongoing.
+        # If the process ends, we disable the button again
+        if (self.sp.value() > 0
+            and framesTaken < 10
+                and framesTaken < framesSpecified):
+            self.snapbutton.setEnabled(1)
+        else:
+            self.snapbutton.setEnabled(0)
+
+        if (self.sp.value() > 0):
+            self.l2.setVisible(1)
+        else:
+            self.l2.setVisible(0)
+
+    def take_snapshot(self):
+        # Import the global variables we'll be using
+        global framesTaken, clusters, borderSize, offset
+        # This will be needed to check if the player was playing at the
+        # time of the button press
+        wasPlaying = None
+        # We need to get the width and height of the video file
+        videoSize = self.mediaplayer.video_get_size()
+        # This is the VLC function, that let's us
+        # take a snap shot of the video frame and save it in the directory
+        self.mediaplayer.video_take_snapshot(
+            0, "./img_"+str(framesTaken)+".png",
+            videoSize[0],
+            videoSize[1])
+
+        # While we do the image processing, let's pause the video
+        if self.mediaplayer.is_playing():
+            self.PlayPause()
+            wasPlaying = True
 # Initializing the QtWidgets Application instance
 app = QtWidgets.QApplication(sys.argv)
 
