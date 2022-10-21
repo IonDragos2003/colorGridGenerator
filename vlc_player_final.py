@@ -156,7 +156,7 @@ class Player(QMainWindow):
     def updateUI(self):
         """updates the user interface"""
         # setting the slider to the desired position
-        self.positionslider.setValue(int(self.mediaplayer.get_position() * 1000))
+        self.positionslider.setValue(int(self.mediaplayer.get_position()) * 1000)
 
         if not self.mediaplayer.is_playing():
             # no need to call this function if nothing is played
