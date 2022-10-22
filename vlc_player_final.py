@@ -1,11 +1,11 @@
 import sys
 import os.path
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QMainWindow, QWidget, QFrame, QSlider, QHBoxLayout, QPushButton, \
     QVBoxLayout, QAction, QFileDialog
 import vlc
+
 
 class Player(QMainWindow):
     """A simple Media Player using VLC and Qt
@@ -29,14 +29,13 @@ class Player(QMainWindow):
         self.setCentralWidget(self.widget)
 
         # In this widget, the video will be drawn
-        if sys.platform == "darwin": # for MacOS
-            from PyQt5.QtWidgets import QMacCocoaViewContainer	
+        if sys.platform == "darwin":  # for MacOS
+            from PyQt5.QtWidgets import QMacCocoaViewContainer
             self.videoframe = QMacCocoaViewContainer(0)
         else:
             self.videoframe = QFrame()
         self.palette = self.videoframe.palette()
-        self.palette.setColor (QPalette.Window,
-                               QColor(0,0,0))
+        self.palette.setColor(QPalette.Window, QColor(0, 0, 0))
         self.videoframe.setPalette(self.palette)
         self.videoframe.setAutoFillBackground(True)
 
@@ -130,11 +129,11 @@ class Player(QMainWindow):
         # this is platform specific!
         # you have to give the id of the QFrame (or similar object) to
         # vlc, different platforms have different functions for this
-        if sys.platform.startswith('linux'): # for Linux using the X Server
+        if sys.platform.startswith('linux'):  # for Linux using the X Server
             self.mediaplayer.set_xwindow(self.videoframe.winId())
-        elif sys.platform == "win32": # for Windows
+        elif sys.platform == "win32":  # for Windows
             self.mediaplayer.set_hwnd(self.videoframe.winId())
-        elif sys.platform == "darwin": # for MacOS
+        elif sys.platform == "darwin":  # for MacOS
             self.mediaplayer.set_nsobject(int(self.videoframe.winId()))
         self.PlayPause()
 
@@ -156,7 +155,8 @@ class Player(QMainWindow):
     def updateUI(self):
         """updates the user interface"""
         # setting the slider to the desired position
-        self.positionslider.setValue(int(self.mediaplayer.get_position()) * 1000)
+        self.positionslider.setValue(
+            int(self.mediaplayer.get_position()) * 1000)
 
         if not self.mediaplayer.is_playing():
             # no need to call this function if nothing is played
@@ -166,12 +166,3 @@ class Player(QMainWindow):
                 # "Pause", not the desired behavior of a media player
                 # this will fix it
                 self.Stop()
-
-# if __name__ == "__main__":
-#     app = QtWidgets.QApplication(sys.argv)
-#     player = Player()
-#     player.show()
-#     player.resize(640, 480)
-#     if sys.argv[1:]:
-#         player.OpenFile(sys.argv[1])
-#     sys.exit(app.exec_())
