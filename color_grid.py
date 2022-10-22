@@ -1,10 +1,10 @@
+import os
 import sys
+import numpy as np
 import cv2
 from sklearn.cluster import KMeans
-import numpy as np
-import os
 from vlc_player_final import Player
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 
 # Global variables
 framesTaken = 0
@@ -14,6 +14,7 @@ clusters = 5
 margin = 5
 borderSize = 40
 offset = 2
+
 
 class Custom_VLC_Player(Player):
     def __init__(self):
@@ -35,14 +36,11 @@ class Custom_VLC_Player(Player):
 
         # Let's add the button to our layout
         self.snapbox.addWidget(self.snapbutton)
-        
 
         # We will connect a snapshot taking function to the button later.
         # Let's leave this command commented out for now
-        #self.connect(self.snapbutton, QtCore.SIGNAL("clicked()"),self.take_snapshot)
-        #self.connect(origin, SIGNAL('completed'), self._show_results)
         self.snapbutton.clicked.connect(self.take_snapshot)
-        
+
         # We place a label for specifing the frame count to use
         self.l1 = QtWidgets.QLabel("Number of frames:")
 
@@ -153,7 +151,7 @@ class Custom_VLC_Player(Player):
         if self.mediaplayer.is_playing():
             self.PlayPause()
             wasPlaying = True
-        
+
         # Let's fetch the video frame we just captured
         imagePath = os.getcwd() + "/img_"+str(framesTaken)+".png"
         # Transform the image to an OpenCV readable image
@@ -187,7 +185,7 @@ class Custom_VLC_Player(Player):
         barImage = image_resize(
             cv2.cvtColor(bar, cv2.COLOR_RGB2BGR),
             width=int(videoSize[0]))
-        #1 - AICI E O EROARE (// in loc de / original)
+
         # This is just a whitespace to put between the image and the color bar
         im = np.zeros((borderSize//2, int(videoSize[0]), 3), np.uint8)
         cv2.rectangle(im, (0, 0), (int(videoSize[0]), borderSize//2),
@@ -275,6 +273,7 @@ def centroid_histogram(clt):
     # return the histogram
     return hist
 
+
 # Courtesy of https://www.pyimagesearch.com/2014/05/26/opencv-python-k-means-color-clustering/
 def plot_colors(hist, centroids):
     # initialize the bar chart representing the relative frequency
@@ -332,5 +331,5 @@ vlc.show()
 vlc.resize(660, 530)
 
 if sys.argv[1:]:
-    player.OpenFile(sys.argv[1])
+    vlc.OpenFile(sys.argv[1])
 sys.exit(app.exec_())
