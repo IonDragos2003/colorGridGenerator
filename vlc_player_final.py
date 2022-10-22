@@ -1,9 +1,10 @@
 import sys
 import os.path
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QMainWindow, QWidget, QFrame, QSlider, QHBoxLayout, QPushButton, \
-    QVBoxLayout, QAction, QFileDialog, QApplication
+    QVBoxLayout, QAction, QFileDialog
 import vlc
 
 class Player(QMainWindow):
@@ -155,7 +156,7 @@ class Player(QMainWindow):
     def updateUI(self):
         """updates the user interface"""
         # setting the slider to the desired position
-        self.positionslider.setValue(self.mediaplayer.get_position() * 1000)
+        self.positionslider.setValue(int(self.mediaplayer.get_position()) * 1000)
 
         if not self.mediaplayer.is_playing():
             # no need to call this function if nothing is played
@@ -166,11 +167,11 @@ class Player(QMainWindow):
                 # this will fix it
                 self.Stop()
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    player = Player()
-    player.show()
-    player.resize(640, 480)
-    if sys.argv[1:]:
-        player.OpenFile(sys.argv[1])
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     app = QtWidgets.QApplication(sys.argv)
+#     player = Player()
+#     player.show()
+#     player.resize(640, 480)
+#     if sys.argv[1:]:
+#         player.OpenFile(sys.argv[1])
+#     sys.exit(app.exec_())
